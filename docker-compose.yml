@@ -1,42 +1,30 @@
 services:
-  app:
+  backend:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile
-    container_name: laravel_app
-    working_dir: /var/www/html
+    container_name: laravel_app_onfly
     volumes:
       - ./app:/var/www/html
+    ports:
+      - "9000:9000"
     depends_on:
       - db
     networks:
-      - app-network
+      - onfly-network
 
-  web:
+  webserver:
     image: nginx:alpine
-    container_name: laravel_web
+    container_name: laravel_web_onfly
     ports:
       - "8080:80"
     volumes:
       - ./app:/var/www/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - app
+      - backend
     networks:
-      - app-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: ../frontend.Dockerfile
-    container_name: vue_frontend
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-    ports:
-      - "5173:5173"
-    networks:
-      - app-network
+      - onfly-network
 
   db:
     image: mysql:8.0
@@ -47,14 +35,27 @@ services:
       MYSQL_USER: laravel
       MYSQL_PASSWORD: laravel
     ports:
-      - "3308:3306"
+      - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - app-network
+      - onfly-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vue_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - onfly-network
 
 volumes:
   dbdata:
 
 networks:
-  app-network:
+  onfly-network:
+    driver: bridge
