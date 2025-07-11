@@ -1,0 +1,53 @@
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: #001f3f;
+  overflow: hidden;
+}
+
+.background-image {
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/bg-onfly.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.login-card {
+  position: relative;
+  z-index: 10;
+  max-width: 420px;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 64, 128, 0.25);
+  transition: box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow: 0 0 50px rgba(0, 64, 128, 0.35);
+}
+
+.logo {
+  width: 200px;
+  margin-bottom: 1rem;
+}
+
+.form-control:focus {
+  border-color: #004080;
+  box-shadow: 0 0 8px rgba(0, 64, 128, 0.3);
+}
+
+.btn-primary {
+  background-color: #004080;
+  border-color: #004080;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #002f60;
+  border-color: #002f60;
+}
