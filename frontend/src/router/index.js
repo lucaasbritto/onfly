@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import { useUserStore } from '../stores/user'
 
 const routes = [
   {
@@ -21,10 +22,18 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  if (to.meta.requiresAuth && !token) next('/login')
-  else next()
+router.beforeEach(async (to, from, next) => {
+  const store = useUserStore()
+
+  if (!store.user && localStorage.getItem('token')) {
+    await store.fetchUser()
+  }
+
+  if (to.meta.requiresAuth && !store.isAuthenticated) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router
