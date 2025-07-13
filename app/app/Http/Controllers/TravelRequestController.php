@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\TravelRequest;
 use Illuminate\Http\Request;
 
-class TravelRequestController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class TravelRequestController extends Controller{
+    public function index(Request $request){
+        $query = TravelRequest::where('user_id', auth()->id());
+
+        $query->when($request->filled('status'), fn($q) => $q->where('status', $request->status));
+        $query->when($request->filled('destino'), fn($q) => $q->where('destino', 'like', '%'.$request->destino.'%'));
+        $query->when($request->filled('start_date'), fn($q) => $q->whereDate('data_ida', '>=', $request->start_date));
+        $query->when($request->filled('end_date'), fn($q) => $q->whereDate('data_volta', '<=', $request->end_date));
+
+        $perPage = $request->get('per_page', 10);
+        $requests = $query->orderBy('data_ida')->paginate($perPage);
+
+        return response()->json($requests);
     }
 
     /**

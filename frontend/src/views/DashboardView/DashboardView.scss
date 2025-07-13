@@ -1,0 +1,15 @@
+.dashboard {
+  .btn-primary {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  .btn-primary:hover {
+    background-color: #0a58ca;
+    transform: translateY(-1px);
+  }
+  .card {
+    border-radius: 12px;
+  }
+  .form-label {
+    font-size: 0.9rem;
+  }
+}
