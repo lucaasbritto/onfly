@@ -1,11 +1,13 @@
-import { reactive, computed, watch } from 'vue'
+import { reactive, computed, watch, ref } from 'vue'
 import { useRequestStore } from '../../stores/requests'
 
 export function useDashboardScript() {
   const requestStore = useRequestStore()
   const filters = reactive(requestStore.filters)
   const pagination = computed(() => requestStore.pagination)
-
+  const editingRow = ref(null)
+  const editedStatus = ref('')
+  
   let debounceTimeout
   watch(() => filters.destino, (newVal) => {
     clearTimeout(debounceTimeout)
@@ -24,9 +26,17 @@ export function useDashboardScript() {
     return new Intl.DateTimeFormat('pt-BR').format(date)
   }
 
-  function criarPedido() {
-    //
-  }
+  
+  async function updateStatus(id, status) {
+    try {
+        await requestStore.updateStatus(id, status)
+
+        const item = requestStore.requests.find(r => r.id === id)
+        if (item) item.status = status
+    } catch (e) {
+        console.error('Erro ao atualizar status', e)
+    }
+   }
 
   return {
     requestStore,
@@ -34,6 +44,8 @@ export function useDashboardScript() {
     pagination,
     applyFilter,
     formatDateBR,
-    criarPedido
+    editingRow,
+    editedStatus,
+    updateStatus,
   }
 }

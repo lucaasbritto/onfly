@@ -12,5 +12,6 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('requests')->group(function () {
         Route::get('/', [TravelRequestController::class, 'index']);
         Route::post('/', [TravelRequestController::class, 'store']);
+        Route::patch('/{id}', [TravelRequestController::class, 'updateStatus']);
     });
 });

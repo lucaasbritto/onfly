@@ -48,31 +48,58 @@
     <table v-else class="table table-hover shadow-sm">
       <thead class="table-light">
         <tr>
-          <th>#</th>
+          <th>ID</th>
+          <th v-if="userStore.isAdmin">Solicitante</th>
           <th>Destino</th>
           <th>Ida</th>
           <th>Volta</th>
           <th>Status</th>
+          <th v-if="userStore.isAdmin">Atualizado Por</th>
+          <th v-if="userStore.isAdmin">Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="req in requestStore.requests" :key="req.id">
           <td>{{ req.id }}</td>
+          <td v-if="userStore.isAdmin">{{ req.user?.name || '—' }}</td>
           <td>{{ req.destino }}</td>
           <td>{{ formatDateBR(req.data_ida) }}</td>
           <td>{{ formatDateBR(req.data_volta) }}</td>
           <td>
-            <span
-              :class="{
-                'badge bg-warning': req.status === 'solicitado',
-                'badge bg-success': req.status === 'aprovado',
-                'badge bg-danger': req.status === 'cancelado',
-              }"
-            >{{ req.status }}</span>
+            <div v-if="editingRow === req.id">
+              <select v-model="editedStatus" class="form-select form-select-sm">
+                <option value="aprovado">Aprovado</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+            <div v-else>
+              <span
+                :class="{
+                  'badge bg-warning': req.status === 'solicitado',
+                  'badge bg-success': req.status === 'aprovado',
+                  'badge bg-danger': req.status === 'cancelado',
+                }"
+              >
+                {{ req.status }}
+              </span>
+            </div>
+          </td>
+          <td v-if="userStore.isAdmin">{{ req.updated_by_user?.name || '—' }}</td>
+          <td v-if="userStore.isAdmin">
+            <button class="btn btn-sm btn-outline-success me-1 d-inline-flex align-items-center"
+                    v-if="req.status === 'solicitado'"
+                    @click="openConfirmDialog(req.id, 'aprovado')">
+              <i class="bi bi-check-lg me-1"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center"
+                   v-if="req.status === 'solicitado'"
+                    @click="openConfirmDialog(req.id, 'cancelado')">
+              <i class="bi bi-x-lg me-1"></i>
+            </button>
           </td>
         </tr>
         <tr v-if="!requestStore.loading && requestStore.requests.length === 0">
-          <td colspan="5" class="text-center text-muted">Nenhum pedido encontrado.</td>
+          <td colspan="6" class="text-center text-muted">Nenhum pedido encontrado.</td>
         </tr>
       </tbody>
     </table>
@@ -93,6 +120,15 @@
         </li>
       </ul>
     </nav>
+
+    <ConfirmDialog
+      v-if="confirmModal"
+      :title="confirmTitle"
+      :message="confirmMessage"
+      :loading="confirmLoading"
+      @cancel="confirmModal = false"
+      @confirm="handleConfirm"
+    />
   </div>
 </template>
 
@@ -102,13 +138,29 @@ import { useDashboardScript } from './DashboardView.js'
 import './DashboardView.scss'
 import Modal from '../../components/Modal.vue'
 import TravelRequestForm from '../../components/TravelRequestForm/TravelRequestForm.vue'
+import { useUserStore } from '../../stores/user'
+import ConfirmDialog from '../../components/ConfirmDialog.vue'
+import { useToast } from 'vue-toast-notification'
+
+const userStore = useUserStore()
+const toast = useToast()
+
+const confirmModal = ref(false)
+const confirmLoading = ref(false)
+const confirmTitle = ref('')
+const confirmMessage = ref('')
+let selectedAction = ref(null)
+let selectedRequestId = ref(null)
 
 const {
   requestStore,
   filters,
   pagination,
   applyFilter,
-  formatDateBR
+  formatDateBR,
+  editingRow,
+  editedStatus,
+  updateStatus,
 } = useDashboardScript()
 
 const showModal = ref(false)
@@ -123,4 +175,40 @@ function closeModal() {
 function handleSaved() {
   closeModal()
 }
+
+function openConfirmDialog(id, action) {
+  const request = requestStore.requests.find(r => r.id === id)
+
+  if (action === 'cancelado' && request.status === 'aprovado') {
+    toast.error('Não é possível cancelar um pedido que já foi aprovado.')
+    return
+  }
+
+  selectedRequestId.value = id
+  selectedAction.value = action
+  confirmTitle.value = action === 'aprovado' ? 'Confirmar Aprovação' : 'Confirmar Cancelamento'
+  confirmMessage.value = `Tem certeza que deseja ${action === 'aprovado' ? 'aprovar' : 'cancelar'} este pedido?`
+  confirmModal.value = true
+}
+
+async function handleConfirm() {
+  confirmLoading.value = true
+  try {
+    await requestStore.updateStatus(selectedRequestId.value, selectedAction.value)
+
+    const item = requestStore.requests.find(r => r.id === selectedRequestId.value)
+    if (item) item.status = selectedAction.value
+
+    toast.success(`Pedido ${selectedAction.value === 'aprovado' ? 'aprovado' : 'cancelado'} com sucesso.`)
+  } catch (e) {
+    toast.error('Erro ao atualizar o status')
+    console.error(e)
+  } finally {
+    confirmLoading.value = false
+    confirmModal.value = false
+    selectedRequestId.value = null
+    selectedAction.value = null
+  }
+}
+
 </script>

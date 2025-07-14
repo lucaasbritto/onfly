@@ -62,4 +62,8 @@ class User extends Authenticatable implements JWTSubject
     public function travelRequests(): HasMany{
         return $this->hasMany(TravelRequest::class);
     }
+
+    public function isAdmin(){
+       return (bool) $this->is_admin;
+    }
 }

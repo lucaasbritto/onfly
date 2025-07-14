@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getRequests, createRequest } from '../api/requests'
+import { getRequests, createRequest, updateRequestStatus } from '../api/requests'
 
 export const useRequestStore = defineStore('requests', {
   state: () => ({
@@ -46,6 +46,19 @@ export const useRequestStore = defineStore('requests', {
         return created
       } catch (e) {
         console.error('Erro ao criar pedido:', e)
+        throw e
+      }
+    },
+
+    async updateStatus(id, status) {
+      try {
+        const updated = await updateRequestStatus(id, { status })
+        const index = this.requests.findIndex((r) => r.id === id)
+        if (index !== -1) {
+          this.requests[index] = updated
+        }
+      } catch (e) {
+        console.error('Erro ao atualizar status:', e)
         throw e
       }
     },

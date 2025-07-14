@@ -26,14 +26,18 @@ router.beforeEach(async (to, from, next) => {
   const store = useUserStore()
 
   if (!store.user && localStorage.getItem('token')) {
-    await store.fetchUser()
+    try {
+      await store.fetchUser()
+    } catch (e) {
+      store.logout()
+      return next('/login')
+    }
   }
 
   if (to.meta.requiresAuth && !store.isAuthenticated) {
-    next('/login')
-  } else {
-    next()
+    return next('/login')
   }
+  next()
 })
 
 export default router

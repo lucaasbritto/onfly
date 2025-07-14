@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\TravelRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTravelRequest;
+use App\Http\Requests\UpdateTravelRequestStatusRequest;
 
 class TravelRequestController extends Controller{
     public function index(Request $request){
-        $query = TravelRequest::where('user_id', auth()->id());
+
+        $user = auth()->user();
+        $query = TravelRequest::with(['user', 'updatedByUser']);
+
+        if (!$user->is_admin) {
+            $query->where('user_id', $user->id);
+        }       
 
         $query->when($request->filled('status'), fn($q) => $q->where('status', $request->status));
         $query->when($request->filled('destino'), fn($q) => $q->where('destino', 'like', '%'.$request->destino.'%'));
@@ -28,7 +35,6 @@ class TravelRequestController extends Controller{
         $user = auth()->user();
 
         $travel = $user->travelRequests()->create([
-            'solicitante' => $user->name,
             'destino'     => $input['destino'],
             'data_ida'    => $input['data_ida'],
             'data_volta'  => $input['data_volta'],
@@ -40,6 +46,26 @@ class TravelRequestController extends Controller{
             'data'    => $travel,
         ], 201);
     }
+
+    public function updateStatus(UpdateTravelRequestStatusRequest $request, $id){
+
+        $validated = $request->validated();
+
+        $requestModel = TravelRequest::findOrFail($id);
+
+        $requestModel->update([
+            'status'     => $validated['status'],
+            'updated_by' => auth()->id(),
+        ]);
+
+       $requestModel->load('user');
+
+        return response()->json([
+            'message' => 'Status atualizado com sucesso.',
+            'data'    => $requestModel
+        ]);
+    }
+
 
     /**
      * Display the specified resource.
