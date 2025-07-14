@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TravelRequest;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTravelRequest;
 
 class TravelRequestController extends Controller{
     public function index(Request $request){
@@ -20,20 +21,24 @@ class TravelRequestController extends Controller{
         return response()->json($requests);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        
+    public function store(StoreTravelRequest $request){
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $input = $request->validated();
+        $user = auth()->user();
+
+        $travel = $user->travelRequests()->create([
+            'solicitante' => $user->name,
+            'destino'     => $input['destino'],
+            'data_ida'    => $input['data_ida'],
+            'data_volta'  => $input['data_volta'],
+            'status'      => 'solicitado',
+        ]);
+
+       return response()->json([
+            'message' => 'Pedido de viagem criado com sucesso.',
+            'data'    => $travel,
+        ], 201);
     }
 
     /**

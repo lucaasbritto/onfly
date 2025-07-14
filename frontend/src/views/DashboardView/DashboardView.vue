@@ -29,11 +29,17 @@
     </div>
 
     <div class="text-end mb-2">
-        <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" @click="criarPedido">
+        <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" @click="showModal = true">
             <i class="bi bi-plus-circle"></i> Novo pedido
         </button>
     </div>
 
+    <Modal v-if="showModal" >
+      <TravelRequestForm  
+        @close="closeModal"
+        @saved="handleSaved" 
+      />
+    </Modal>
 
     <div v-if="requestStore.loading" class="text-center py-5">
       <div class="spinner-border text-primary"></div>
@@ -91,20 +97,30 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useDashboardScript } from './DashboardView.js'
 import './DashboardView.scss'
+import Modal from '../../components/Modal.vue'
+import TravelRequestForm from '../../components/TravelRequestForm/TravelRequestForm.vue'
 
 const {
   requestStore,
   filters,
   pagination,
   applyFilter,
-  formatDateBR,
-  criarPedido
+  formatDateBR
 } = useDashboardScript()
 
+const showModal = ref(false)
 onMounted(() => {
   requestStore.fetchRequests()
 })
+
+function closeModal() {
+  showModal.value = false
+}
+
+function handleSaved() {
+  closeModal()
+}
 </script>
