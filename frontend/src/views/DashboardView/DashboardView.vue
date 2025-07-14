@@ -148,22 +148,28 @@
       </tbody>
     </table>
 
+    <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap">
+      <div v-if="pagination.lastPage > 1" class="text-muted small mb-2 mb-md-0">
+        Página {{ pagination.currentPage }} de {{ pagination.lastPage }} — {{ pagination.total }} registros
+      </div>
+
     <nav v-if="pagination.lastPage > 1" aria-label="Page navigation">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" :class="{ disabled: pagination.currentPage === 1 }">
-          <button class="page-link" @click="requestStore.changePage(pagination.currentPage - 1)">Anterior</button>
-        </li>
-        <li class="page-item"
-            v-for="page in [...Array(pagination.lastPage).keys()].map(i => i + 1)"
-            :key="page"
-            :class="{ active: page === pagination.currentPage }">
-          <button class="page-link" @click="requestStore.changePage(page)">{{ page }}</button>
-        </li>
-        <li class="page-item" :class="{ disabled: pagination.currentPage === pagination.lastPage }">
-          <button class="page-link" @click="requestStore.changePage(pagination.currentPage + 1)">Próxima</button>
-        </li>
-      </ul>
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{ disabled: pagination.currentPage === 1 }">
+            <button class="page-link" @click="requestStore.changePage(pagination.currentPage - 1)">Anterior</button>
+          </li>
+          <li class="page-item"
+              v-for="page in [...Array(pagination.lastPage).keys()].map(i => i + 1)"
+              :key="page"
+              :class="{ active: page === pagination.currentPage }">
+            <button class="page-link" @click="requestStore.changePage(page)">{{ page }}</button>
+          </li>
+          <li class="page-item" :class="{ disabled: pagination.currentPage === pagination.lastPage }">
+            <button class="page-link" @click="requestStore.changePage(pagination.currentPage + 1)">Próxima</button>
+          </li>
+        </ul>
     </nav>
+</div>
 
     <ConfirmDialog
       v-if="confirmModal"
