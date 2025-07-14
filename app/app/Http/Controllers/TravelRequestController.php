@@ -6,6 +6,7 @@ use App\Models\TravelRequest;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequestStatusRequest;
+use App\Notifications\TravelRequestStatusUpdated;
 
 class TravelRequestController extends Controller{
     public function index(Request $request){
@@ -65,6 +66,7 @@ class TravelRequestController extends Controller{
         ]);
 
        $requestModel->load(['user', 'updatedByUser']);
+       $requestModel->user->notify(new TravelRequestStatusUpdated($requestModel));
 
         return response()->json([
             'message' => 'Status atualizado com sucesso.',

@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+   font-family: 'Inter', sans-serif;
 }
 
 main {
@@ -34,4 +34,114 @@ main {
 .btn-outline-secondary:hover {
   background-color: #fff;
   color: #009efa;
+}
+
+.dropdown-notifs {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 5px);
+  width: 320px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #333;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.dropdown-notifs ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dropdown-notifs li {
+  padding: 10px 14px;
+  margin: 0 16px 6px 16px;
+  border-radius: 8px;
+  border-bottom: 1px solid #e3e3e3;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.dropdown-notifs li:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.dropdown-notifs li:hover {
+  background-color: #f5faff;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.dropdown-notifs small {
+  display: block;
+  color: #999;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.bg-lightblue {
+  background-color: #d0e7ff;
+  color: #0b3c91;
+}
+
+.bg-aprove {
+  background-color: #d9f0dc;
+  color: #2e553e;
+}
+
+.bg-cancel {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.dropdown-notifs .btn-link {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 0 16px;
+  padding: 8px 0;
+  font-weight: 600;
+  color: #007bff;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.dropdown-notifs .btn-link:hover {
+  background-color: #e9f5ff;
+  border-color: #007bff;
+  text-decoration: none;
+}
+
+.dropdown-notifs ul li {
+  position: relative;
+  padding-right: 2.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.dropdown-notifs ul li button {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  border: none;
+  background-color: #e6f4ea;
+  color: #198754;
+  font-size: 1.1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-notifs ul li button:hover {
+  background-color: #c3e6cb;
 }
