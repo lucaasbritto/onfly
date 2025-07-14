@@ -1,32 +1,76 @@
 <template>
   <div class="dashboard container py-5">
     <div class="card shadow-sm mb-4 border-0">
-      <div class="card-body">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Status</label>
-            <select v-model="filters.status" @change="applyFilter('status', filters.status)" class="form-select">
-              <option value="">Todos</option>
-              <option value="aprovado">Aprovado</option>
-              <option value="cancelado">Cancelado</option>
-              <option value="solicitado">Solicitado</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Destino</label>
-            <input v-model="filters.destino" class="form-control" placeholder="Digite o destino" />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Data ida</label>
-            <input type="date" v-model="filters.start_date" @change="applyFilter('start_date', filters.start_date)" class="form-control" />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Data volta</label>
-            <input type="date" v-model="filters.end_date" @change="applyFilter('end_date', filters.end_date)" class="form-control" />
-          </div>
-        </div>
+  <div class="card-body">
+    <div class="row g-3 align-items-end">
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Status</label>
+        <select v-model="filters.status" @change="applyFilter('status', filters.status)" class="form-select">
+          <option value="">Todos</option>
+          <option value="aprovado">Aprovado</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="solicitado">Solicitado</option>
+        </select>
       </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Destino</label>
+        <input v-model="filters.destino" class="form-control" placeholder="Digite o destino" />
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Data ida</label>
+        <input type="date" v-model="filters.start_date" @change="applyFilter('start_date', filters.start_date)" class="form-control" />
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-semibold">Data volta</label>
+        <input type="date" v-model="filters.end_date" @change="applyFilter('end_date', filters.end_date)" class="form-control" />
+      </div>
+
+      <div class="col-md-3" v-if="userStore.isAdmin">
+        <label class="form-label fw-semibold">ID</label>
+        <input
+          type="number"
+          v-model="filters.id"
+          @input="applyFilter('id', filters.id)"
+          class="form-control"
+          placeholder="ID"
+        />
+      </div>
+
+      <div class="col-md-3" v-if="userStore.isAdmin">
+        <label class="form-label fw-semibold">Solicitante</label>
+        <select
+          v-model="filters.user_id"
+          @change="applyFilter('user_id', filters.user_id)"
+          class="form-select"
+        >
+          <option value="">Todos</option>
+          <option v-for="user in usersList" :key="user.id" :value="user.id">
+            {{ user.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-3" v-if="userStore.isAdmin">
+        <label class="form-label fw-semibold">Atualizado por</label>
+        <select
+          v-model="filters.admin_id"
+          @change="applyFilter('admin_id', filters.admin_id)"
+          class="form-select"
+        >
+          <option value="">Todos</option>
+          <option v-for="admin in adminsList" :key="admin.id" :value="admin.id">
+            {{ admin.name }}
+          </option>
+        </select>
+      </div>
+
     </div>
+  </div>
+</div>
 
     <div class="text-end mb-2">
         <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1" @click="showModal = true">
@@ -141,6 +185,7 @@ import TravelRequestForm from '../../components/TravelRequestForm/TravelRequestF
 import { useUserStore } from '../../stores/user'
 import ConfirmDialog from '../../components/ConfirmDialog.vue'
 import { useToast } from 'vue-toast-notification'
+import { getUsers, getAdmins } from '../../api/user'
 
 const userStore = useUserStore()
 const toast = useToast()
@@ -164,7 +209,13 @@ const {
 } = useDashboardScript()
 
 const showModal = ref(false)
-onMounted(() => {
+const usersList = ref([])
+const adminsList = ref([])
+
+onMounted(() => {  
+  if (userStore.isAdmin) {
+    loadFiltersData()
+  }
   requestStore.fetchRequests()
 })
 
@@ -174,6 +225,20 @@ function closeModal() {
 
 function handleSaved() {
   closeModal()
+}
+
+async function loadFiltersData() {
+  try {
+    usersList.value = await getUsers()
+  } catch (e) {
+    toast.error('Erro ao carregar usuários')
+  }
+
+  try {
+    adminsList.value = await getAdmins()
+  } catch (e) {
+    toast.error('Erro ao carregar administradores')
+  }
 }
 
 function openConfirmDialog(id, action) {

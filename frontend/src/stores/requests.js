@@ -7,10 +7,13 @@ export const useRequestStore = defineStore('requests', {
     pagination: {},
     loading: false,
     filters: {
+      id:'',
       status: '',
       destino: '',
       start_date: '',
       end_date: '',
+      user_id: '',
+      admin_id: '',
     },
   }),
 
