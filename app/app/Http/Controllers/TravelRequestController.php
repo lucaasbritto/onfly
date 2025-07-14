@@ -54,6 +54,26 @@ class TravelRequestController extends Controller{
         ], 201);
     }
 
+    public function show($id)
+    {
+        $user = auth()->user();
+
+        $query = TravelRequest::with(['user', 'updatedByUser'])->where('id', $id);
+        
+        if (!$user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+
+        $travelRequest = $query->first();
+
+        if (!$travelRequest) {
+            return response()->json(['message' => 'Pedido não encontrado ou sem permissão'], 404);
+        }
+
+        return response()->json($travelRequest);
+    }
+    
+
     public function updateStatus(UpdateTravelRequestStatusRequest $request, $id){
 
         $validated = $request->validated();
