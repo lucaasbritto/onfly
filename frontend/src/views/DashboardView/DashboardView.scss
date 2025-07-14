@@ -1,15 +1,29 @@
-.dashboard {
-  .btn-primary {
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  .btn-primary:hover {
-    background-color: #0a58ca;
-    transform: translateY(-1px);
-  }
-  .card {
-    border-radius: 12px;
-  }
-  .form-label {
-    font-size: 0.9rem;
-  }
+.dashboard-layout {
+  min-height: 100vh;
+  position: relative;
+}
+
+.dashboard-sidebar {
+  width: 280px;
+  background-color: #082f4d;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.toggle-open-btn {
+  position: fixed;
+  top: 80px;
+  left: 15px;
+  z-index: 1020;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.dashboard-content{
+  margin-left: 25px;
 }

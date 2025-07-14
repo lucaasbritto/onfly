@@ -1,13 +1,14 @@
 <template>
   <div id="app">
-    <header 
-        v-if="!isLoginPage && userStore.isAuthenticated"
-        class="app-header bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center">
-      <h5 class="mb-0">Onfly Portal</h5>
+    <header
+      v-if="!isLoginPage && userStore.isAuthenticated"
+      class="app-header shadow-sm px-4 py-3 d-flex justify-content-between align-items-center"
+    >
+      <img src="/images/logo-onfly-black.webp" alt="Logo Onfly" height="32" class="logo" />
 
       <div v-if="userStore.isAuthenticated" class="d-flex align-items-center gap-3">
-        <span>Olá, {{ userStore.userName }}</span>
-        <button class="btn btn-outline-danger btn-sm" @click="logout">Sair</button>
+        <span class="fw-semibold text-dark">Bem vindo, {{ userStore.userName }}</span>
+        <button class="btn btn-sm btn-outline-secondary" @click="logout">Sair</button>
       </div>
     </header>
 
@@ -41,19 +42,5 @@ const logout = () => {
 </script>
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f9f9f9;
-}
 
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-main {
-  min-height: 100vh;
-}
 </style>

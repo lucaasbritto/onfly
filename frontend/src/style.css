@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+main {
+  min-height: 100vh;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #009efa;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 2rem;
+}
+
+.app-header .logo {
+  height: 32px;
+  object-fit: contain;
+}
+
+.app-header span {
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  border-color: #fff;
+  color: #fff;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #fff;
+  color: #009efa;
+}
