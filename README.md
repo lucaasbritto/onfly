@@ -118,7 +118,7 @@ cp app/.env.example app/.env.testing
 
 2. **Configure o nome do banco em .env.testing**
 ```env
-DB_DATABASE=laravel
+DB_DATABASE=laravel_testing
 ```
 
 3. **Acesse o container**
