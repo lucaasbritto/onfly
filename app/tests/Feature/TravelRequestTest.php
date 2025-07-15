@@ -27,7 +27,7 @@ class TravelRequestTest extends TestCase
     }
 
     public function test_user_can_create_travel_request(){
-        $this->actingAs($this->user, 'api');
+        $this->actingAs($this->user);
 
         $payload = [
             'destino' => 'São Paulo',

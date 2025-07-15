@@ -7,30 +7,24 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreTravelRequest;
 use App\Http\Requests\UpdateTravelRequestStatusRequest;
 use App\Notifications\TravelRequestStatusUpdated;
+use App\Services\TravelRequestService;
 
 class TravelRequestController extends Controller{
+
+
+    protected TravelRequestService $service;
+
+    public function __construct(TravelRequestService $service)
+    {
+        $this->service = $service;
+    }
+
+
     public function index(Request $request){
 
         $user = auth()->user();
-        $query = TravelRequest::with(['user', 'updatedByUser']);
-
-        if (!$user->is_admin) {
-            $query->where('user_id', $user->id);
-        }       
-
-        $query->when($request->filled('status'), fn($q) => $q->where('status', $request->status));
-        $query->when($request->filled('destino'), fn($q) => $q->where('destino', 'like', '%'.$request->destino.'%'));
-        $query->when($request->filled('start_date'), fn($q) => $q->whereDate('data_ida', '>=', $request->start_date));
-        $query->when($request->filled('end_date'), fn($q) => $q->whereDate('data_volta', '<=', $request->end_date));
-        $query->when($request->filled('id'), fn($q) => $q->where('id', $request->id));
-        $query->when($request->filled('user_id'), fn($q) => $q->where('user_id', $request->user_id));
-        $query->when($request->filled('admin_id'), function ($q) use ($request) {
-            $adminId = $request->admin_id;
-            $q->whereHas('updatedByUser', fn($sub) => $sub->where('id', $adminId));
-        });
-
-        $perPage = $request->get('per_page', 10);
-        $requests = $query->orderBy('data_ida')->paginate($perPage);
+        $filters = array_filter($request->all());
+        $requests = $this->service->getFilteredRequests($user, $filters);
 
         return response()->json($requests);
     }
@@ -38,59 +32,33 @@ class TravelRequestController extends Controller{
         
     public function store(StoreTravelRequest $request){
 
-        $input = $request->validated();
         $user = auth()->user();
+        $travelRequest = $this->service->createTravelRequest($user, $request->validated());
 
-        $travel = $user->travelRequests()->create([
-            'destino'     => $input['destino'],
-            'data_ida'    => $input['data_ida'],
-            'data_volta'  => $input['data_volta'],
-            'status'      => 'solicitado',
-        ]);
-
-       return response()->json([
+        return response()->json([
             'message' => 'Pedido de viagem criado com sucesso.',
-            'data'    => $travel,
+            'data' => $travelRequest,
         ], 201);
     }
 
-    public function show($id)
-    {
+
+    public function show($id){
         $user = auth()->user();
-
-        $query = TravelRequest::with(['user', 'updatedByUser'])->where('id', $id);
-        
-        if (!$user->is_admin) {
-            $query->where('user_id', $user->id);
-        }
-
-        $travelRequest = $query->first();
-
-        if (!$travelRequest) {
-            return response()->json(['message' => 'Pedido não encontrado ou sem permissão'], 403);
-        }
+        $travelRequest = $this->service->getByIdOrFail($id, $user);
 
         return response()->json($travelRequest);
     }
-    
+
 
     public function updateStatus(UpdateTravelRequestStatusRequest $request, $id){
+        $user = auth()->user();
+        $travelRequest = TravelRequest::findOrFail($id);
 
-        $validated = $request->validated();
-
-        $requestModel = TravelRequest::findOrFail($id);
-
-        $requestModel->update([
-            'status'     => $validated['status'],
-            'updated_by' => auth()->id(),
-        ]);
-
-       $requestModel->load(['user', 'updatedByUser']);
-       $requestModel->user->notify(new TravelRequestStatusUpdated($requestModel));
+        $travelRequest = $this->service->updateStatus($travelRequest, $request->status, $user);
 
         return response()->json([
             'message' => 'Status atualizado com sucesso.',
-            'data'    => $requestModel
+            'data' => $travelRequest,
         ]);
     }
 }
