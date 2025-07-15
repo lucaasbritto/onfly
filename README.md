@@ -1,22 +1,22 @@
-# Sistema de Pedidos de Viagem  
+# Sistema de Gestão Pedidos de Viagem Corporativa  
 
 Sistema para cadastro, consulta e gestão de pedidos de viagem corporativas com autenticação, notificações, controle de permissões e execução em ambiente **Docker**
 
 ---
 
 ## Tecnologias utilizadas
-- [Laravel 12]
-- [Vue.js 3]
-- [Docker + Docker-compose]
-- [JWT]
-- [MySQL]
-- [Vite]
-- [Pinia]
-- [Axios]
-- [Nginx]
-- [Bootstrap + Icons]
-- [PHPUnit (unitários e feature)]
-- [App\Notifications]
+- Laravel 12
+- Vue.js 3
+- Docker + Docker-compose
+- JWT
+- MySQL
+- Vite
+- Pinia
+- Axios
+- Nginx
+- Bootstrap + Icons
+- PHPUnit (unitários e feature)
+- Notifications
 
 ## Funcionalidades
 
@@ -59,31 +59,31 @@ DB_DATABASE=laravel
 ```
 
 4. **Suba os containers com Docker**
-```bash
+```shell
   docker-compose up --build -d
 ```
 
 5. **Entre no container**
-```bash
+```shell
   docker exec -it laravel_app_onfly bash
 ```
 6. **Instale as dependências do PHP**
-```bash
+```shell
   composer install
 ```
 
 7. **Gere a chave da aplicação**
-```bash
+```shell
   php artisan key:generate
 ```
 
 8. **Gere a chave JWT**
-```bash
+```shell
   php artisan jwt:secret
 ```
 
 9. **Rode as migrações e os seeders**
-```bash
+```shell
   php artisan migrate --seed
 ```
 
@@ -98,7 +98,7 @@ DB_DATABASE=laravel
   - Back-end (API): http://localhost:8080/api
 
 
-## Usuários para Logar no sistema
+## Usuários para acesso do sistema
 | Tipo    | Email                            | Senha                      |
 |---------|----------------------------------|----------------------------|
 | Admin   | admin@teste.com                  | 123456                     |
@@ -106,7 +106,7 @@ DB_DATABASE=laravel
 
 
 ## Rodando os Testes
-- Foi criado testes unitarios e testes de feature. 
+- Foram criados **testes unitários** e de **feature** para garantir a qualidade da aplicação.. 
 - Os testes usam o arquivo .env.testing
 - Por segurança, o arquivo `.env.testing` **não está incluído no versionamento do Git** (ignorado via `.gitignore`).
 - Cada desenvolvedor deve criá-lo localmente na pasta raiz 'onfly' com o comando:
@@ -148,7 +148,7 @@ DB_DATABASE=laravel_testing
     php artisan test --filter=NotificationControllerTest
   ```
 
-7. **Testes Cobrem**
+7. **Cobertura dos testes**
   - Criação de pedido de viagem
   - Atualização de status (com regras de permissão)
   - Cancelamento validado por status
@@ -166,7 +166,7 @@ DB_DATABASE=laravel_testing
 | Feature     | NotificationControllerTest       | API de notificações                         |    
 
 
-## Estrutura de dados obrigatorios do .env
+## Variáveis obrigatórias no .env
 
 ```env
 APP_NAME=Laravel
