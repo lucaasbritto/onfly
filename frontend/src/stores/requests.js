@@ -15,6 +15,7 @@ export const useRequestStore = defineStore('requests', {
       user_id: '',
       admin_id: '',
     },
+    _debounceTimeouts: {},
   }),
 
   actions: {    
@@ -68,7 +69,11 @@ export const useRequestStore = defineStore('requests', {
 
     setFilter(key, value) {
       this.filters[key] = value
-      this.fetchRequests(1)
+      clearTimeout(this._debounceTimeouts[key])
+
+      this._debounceTimeouts[key] = setTimeout(() => {
+        this.fetchRequests(1)
+      }, 500)      
     },
     changePage(page) {
       this.fetchRequests(page);

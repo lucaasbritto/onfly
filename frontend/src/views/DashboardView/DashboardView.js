@@ -10,13 +10,9 @@ export function useDashboardScript() {
   const returnDateError = ref('')
   const idError = ref('')
 
-  let debounceTimeout
   watch(() => filters.destino, (newVal) => {
-    clearTimeout(debounceTimeout)
-    debounceTimeout = setTimeout(() => {
-      requestStore.setFilter('destino', newVal)
-    }, 500)
-  })
+    requestStore.setFilter('destino', newVal)
+    })
 
   watch(
     () => [filters.start_date, filters.end_date],
