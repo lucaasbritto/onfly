@@ -109,7 +109,7 @@ DB_DATABASE=laravel
 - Foi criado testes unitarios e testes de feature. 
 - Os testes usam o arquivo .env.testing
 - Por segurança, o arquivo `.env.testing` **não está incluído no versionamento do Git** (ignorado via `.gitignore`).
-- Cada desenvolvedor deve criá-lo localmente com o comando:
+- Cada desenvolvedor deve criá-lo localmente na pasta raiz 'onfly' com o comando:
 
 1. **Criando o .env.testing**
 ```bash
