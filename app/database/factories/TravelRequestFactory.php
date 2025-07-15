@@ -10,18 +10,21 @@ use App\Models\User;
  */
 class TravelRequestFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected array $cidades = [
+        'São Paulo', 'Rio de Janeiro', 'Salvador', 'Brasília', 'Belo Horizonte',
+        'Curitiba', 'Fortaleza', 'Manaus', 'Recife', 'Porto Alegre', 'São Luis' , 'Aracaju', 'Florianópolis'
+    ];
+
     public function definition(): array
     {
+        $dataIda = $this->faker->dateTimeBetween('+1 days', '+1 month');
+        $dataVolta = (clone $dataIda)->modify('+'.rand(2, 10).' days');
+
         return [
             'user_id' => User::factory(),
-            'destino' => $this->faker->city(),
-            'data_ida' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
-            'data_volta' => $this->faker->dateTimeBetween('+1 month', '+2 months')->format('Y-m-d'),
+            'destino'     => $this->faker->randomElement($this->cidades),
+            'data_ida'    => $dataIda->format('Y-m-d'),
+            'data_volta'  => $dataVolta->format('Y-m-d'),
             'status' => 'solicitado',
             'updated_by' => null,
         ];
