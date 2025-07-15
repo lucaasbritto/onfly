@@ -225,4 +225,70 @@ class TravelRequestTest extends TestCase
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('status');
     }
+
+    public function test_create_validation_fails_without_required_fields(){
+        $this->actingAs($this->user, 'api');
+        
+        $response = $this->postJson('/api/requests', []);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['destino', 'data_ida', 'data_volta']);
+    }
+
+    public function test_admin_cannot_update_status_with_invalid_value(){
+        $this->actingAs($this->admin, 'api');
+
+        $travelRequest = TravelRequest::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => 'solicitado',
+        ]);
+
+        $response = $this->patchJson("/api/requests/{$travelRequest->id}", [
+            'status' => 'pendente'
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['status']);
+    }
+
+
+    public function test_notification_contains_correct_data(){
+        Notification::fake();
+
+        $this->actingAs($this->admin, 'api');
+
+        $travelRequest = TravelRequest::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => 'solicitado',
+        ]);
+
+        $this->patchJson("/api/requests/{$travelRequest->id}", [
+            'status' => 'aprovado'
+        ]);
+
+        Notification::assertSentTo($this->user, TravelRequestStatusUpdated::class, function ($notification) use ($travelRequest) {
+            return $notification->travelRequest->id === $travelRequest->id
+                && $notification->travelRequest->status === 'aprovado';
+        });
+    }
+
+
+    public function test_admin_can_cancel_request_if_not_approved(){
+        $this->actingAs($this->admin, 'api');
+
+        $travelRequest = TravelRequest::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => 'solicitado',
+        ]);
+
+        $response = $this->patchJson("/api/requests/{$travelRequest->id}", [
+            'status' => 'cancelado'
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('travel_requests', [
+            'id' => $travelRequest->id,
+            'status' => 'cancelado',
+        ]);
+    }
 }
