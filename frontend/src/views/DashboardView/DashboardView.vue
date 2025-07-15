@@ -124,6 +124,7 @@
                 v-if="req.status === 'solicitado'"
                 @click="openConfirmDialog(req.id, 'aprovado')"
                 aria-label="Aprovar pedido"
+                title="Aprovar pedido"
               >
                 <i class="bi bi-check-lg me-1"></i>
               </button>
@@ -132,6 +133,7 @@
                 v-if="req.status === 'solicitado'"
                 @click="openConfirmDialog(req.id, 'cancelado')"
                 aria-label="Cancelar pedido"
+                title="Cancelar pedido"
               >
                 <i class="bi bi-x-lg me-1"></i>
               </button>
