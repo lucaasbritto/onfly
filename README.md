@@ -78,11 +78,14 @@ DB_DATABASE=laravel
 ```
 
 8. **Gere a chave JWT**
-  - php artisan jwt:secret
-
+```bash
+  php artisan jwt:secret
+```
 
 9. **Rode as migrações e os seeders**
-  - php artisan migrate --seed
+```bash
+  php artisan migrate --seed
+```
 
 10. **Os Seeders criam**
   - 1 admin
@@ -119,21 +122,31 @@ DB_DATABASE=laravel
 ```
 
 3. **Acesse o container**
-  - docker exec -it laravel_app_onfly bash
+```bash
+  docker exec -it laravel_app_onfly bash
+```
 
 4. **Gere a chave da aplicação para testes**
-  - php artisan key:generate --env=testing
+```bash
+  php artisan key:generate --env=testing
+```
 
 5. **Gere a chave JWT para testes**
-  - php artisan jwt:secret --env=testing
+```bash
+  php artisan jwt:secret --env=testing
+```
 
 6. **Execute o teste**
-  - php artisan test
+```bash
+  php artisan test
+```
   - Ou para testar individualmente:
-    - php artisan test --filter=TravelRequestServiceTest
-    - php artisan test --filter=NotificationServiceTest
-    - php artisan test --filter=TravelRequestTest
-    - php artisan test --filter=NotificationControllerTest
+  ```bash
+    php artisan test --filter=TravelRequestServiceTest
+    php artisan test --filter=NotificationServiceTest
+    php artisan test --filter=TravelRequestTest
+    php artisan test --filter=NotificationControllerTest
+  ```
 
 7. **Testes Cobrem**
   - Criação de pedido de viagem
