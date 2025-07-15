@@ -49,7 +49,7 @@ cd onfly
 ```
 
 2. **Copie o arquivo de ambiente para produção**
-  # cp app/.env.example app/.env
+  #### cp app/.env.example app/.env
 
 
 3. **Configure o nome do banco em .env**
