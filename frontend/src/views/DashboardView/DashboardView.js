@@ -50,9 +50,10 @@ export function useDashboardScript() {
 
 
   function formatDateBR(dateStr) {
-    const date = new Date(dateStr)
-    if (isNaN(date)) return ''
-    return new Intl.DateTimeFormat('pt-BR').format(date)
+    if (!dateStr) return ''
+    
+    const [year, month, day] = dateStr.split('T')[0].split('-')
+    return `${day}/${month}/${year}`
   }
 
   
