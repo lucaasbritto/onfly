@@ -49,7 +49,9 @@ cd onfly
 ```
 
 2. **Copie o arquivo de ambiente para produção**
+```bash
   - cp app/.env.example app/.env
+```
 
 3. **Configure o nome do banco em .env**
 ```env
@@ -57,7 +59,9 @@ DB_DATABASE=laravel
 ```
 
 4. **Suba os containers com Docker**
+```bash
   - docker-compose up --build -d
+```
 
 5. **Entre no container**
   - docker exec -it laravel_app_onfly bash
