@@ -48,30 +48,37 @@ git clone https://github.com/lucaasbritto/onfly.git
 cd onfly
 ```
 
-2. **Copie o arquivo de ambiente para produção e testes**
-  - cp app/.env.example app/.env && cp app/.env.example app/.env.testing
+2. **Copie o arquivo de ambiente para produção**
+  - cp app/.env.example app/.env
 
-3. **Suba os containers com Docker**
+3. **Configure o nome do banco em .env**
+```env
+DB_DATABASE=laravel
+```
+
+4. **Suba os containers com Docker**
   - docker-compose up --build -d
 
-4. **Entre no container e Instale as dependências do PHP**
+5. **Entre no container**
   - docker exec -it laravel_app_onfly bash
-    - composer install
 
-5. **Gere a chave da aplicação ao mesmo tempo para produção e testes**
-  - php artisan key:generate && php artisan key:generate --env=testing
+6. **Instale as dependências do PHP**
+  - composer install
 
-6. **Gere a chave JWT ao mesmo tempo para produção e testes**
-  - php artisan jwt:secret && php artisan jwt:secret --env=testing
+7. **Gere a chave da aplicação**
+  - php artisan key:generate
+
+8. **Gere a chave JWT**
+  - php artisan jwt:secret
 
 
-7. **Rode as migrações e os seeders**
+9. **Rode as migrações e os seeders**
   - php artisan migrate --seed
 
-8. **Os Seeders criam**
-  - 1 admin: admin@teste.com / senha: 123456
-  - 1 usuário: teste@teste.com / senha: 123456
-  - Vários outros usuários e pedidos de viagem aleatórios com destinos brasileiros
+10. **Os Seeders criam**
+  - 1 admin
+  - 5 usuários
+  - Pedidos de viagens 
 
 
 ## Acessos
@@ -79,7 +86,7 @@ cd onfly
   - Back-end (API): http://localhost:8080/api
 
 
-## Usuários para Teste (Seed)
+## Usuários para Logar no sistema
 | Tipo    | Email                            | Senha                      |
 |---------|----------------------------------|----------------------------|
 | Admin   | admin@teste.com                  | 123456                     |
@@ -90,15 +97,28 @@ cd onfly
 - Foi criado testes unitarios e testes de feature. 
 - Os testes usam o arquivo .env.testing
 - Por segurança, o arquivo `.env.testing` **não está incluído no versionamento do Git** (ignorado via `.gitignore`).
-- Cada desenvolvedor deve criá-lo localmente com o comando mencionado no inicio:
+- Cada desenvolvedor deve criá-lo localmente com o comando:
+
+1. **Criando o .env.testing**
 ```bash
 cp app/.env.example app/.env.testing
 ```
 
-1. **Acesse o container**
+2. **Configure o nome do banco em .env.testing**
+```env
+DB_DATABASE=laravel
+```
+
+3. **Acesse o container**
   - docker exec -it laravel_app_onfly bash
 
-2. **Execute o teste**
+4. **Gere a chave da aplicação para testes**
+  - php artisan key:generate --env=testing
+
+5. **Gere a chave JWT para testes**
+  - php artisan jwt:secret --env=testing
+
+6. **Execute o teste**
   - php artisan test
   - Ou para testar individualmente:
     - php artisan test --filter=TravelRequestServiceTest
@@ -106,7 +126,7 @@ cp app/.env.example app/.env.testing
     - php artisan test --filter=TravelRequestTest
     - php artisan test --filter=NotificationControllerTest
 
-3. **Testes Cobrem**
+7. **Testes Cobrem**
   - Criação de pedido de viagem
   - Atualização de status (com regras de permissão)
   - Cancelamento validado por status
@@ -114,7 +134,7 @@ cp app/.env.example app/.env.testing
   - Filtros e visualização de pedidos
   - Autorização e autenticação
 
-4. **Tipos de Testes**
+8. **Tipos de Testes**
 
 | Tipo        | Arquivo                          | Cobertura                                   |
 |-------------|----------------------------------|---------------------------------------------|
