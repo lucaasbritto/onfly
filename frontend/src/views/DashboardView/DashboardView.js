@@ -43,6 +43,9 @@ export function useDashboardScript() {
     }
   }
 
+  function clearFilters() {
+    requestStore.resetFilters()
+  }
 
 
   function formatDateBR(dateStr) {
@@ -75,6 +78,7 @@ export function useDashboardScript() {
     editedStatus,
     updateStatus,
     returnDateError,
-    idError
+    idError,
+    clearFilters
   }
 }

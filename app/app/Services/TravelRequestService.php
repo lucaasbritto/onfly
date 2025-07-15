@@ -18,6 +18,7 @@ class TravelRequestService
         if (!$user->is_admin) {
             $query->where('user_id', $user->id);
 
+            unset($filters['id']);
             unset($filters['admin_id']);
             unset($filters['user_id']);
         }

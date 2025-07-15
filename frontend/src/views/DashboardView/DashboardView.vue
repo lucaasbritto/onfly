@@ -71,6 +71,16 @@
             </select>
           </div>
         </template>
+        <div class="text-center mt-3">
+        <button
+          class="btn btn-sm btn-outline-warning"
+          @click="clearFilters"
+          aria-label="Limpar todos os filtros"
+        >
+          <i class="bi bi-x-circle me-1"></i>
+          Limpar filtros
+        </button>
+        </div>
       </div>
     </aside>
 
@@ -219,7 +229,8 @@ const {
   editedStatus,
   updateStatus,
   returnDateError, 
-  idError
+  idError,
+  clearFilters
 } = useDashboardScript()
 
 const showModal = ref(false)

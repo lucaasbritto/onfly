@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { login as apiLogin, logout as apiLogout } from '../api/auth'
 import { getUserProfile } from '../api/user'
+import { useRequestStore } from './requests'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -22,6 +23,9 @@ export const useUserStore = defineStore('user', {
 
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify(user))
+
+      const requestStore = useRequestStore()
+      requestStore.resetFilters()
     },
 
     async fetchUser() {
@@ -38,6 +42,8 @@ export const useUserStore = defineStore('user', {
       apiLogout()
       this.token = null
       this.user = null
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
     },
   },
 })

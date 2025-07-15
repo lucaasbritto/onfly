@@ -75,6 +75,12 @@ export const useRequestStore = defineStore('requests', {
         this.fetchRequests(1)
       }, 500)      
     },
+
+    resetFilters() {
+        Object.keys(this.filters).forEach(key => {
+            this.filters[key] = ''
+        })
+    },
     changePage(page) {
       this.fetchRequests(page);
     },
