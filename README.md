@@ -49,8 +49,9 @@ cd onfly
 ```
 
 2. **Copie o arquivo de ambiente para produção**
-  #### cp app/.env.example app/.env
-
+```bash
+  cp app/.env.example app/.env
+```
 
 3. **Configure o nome do banco em .env**
 ```env
@@ -59,17 +60,22 @@ DB_DATABASE=laravel
 
 4. **Suba os containers com Docker**
 ```bash
-  - docker-compose up --build -d
+  docker-compose up --build -d
 ```
 
 5. **Entre no container**
-  - docker exec -it laravel_app_onfly bash
-
+```bash
+  docker exec -it laravel_app_onfly bash
+```
 6. **Instale as dependências do PHP**
-  - composer install
+```bash
+  composer install
+```
 
 7. **Gere a chave da aplicação**
-  - php artisan key:generate
+```bash
+  php artisan key:generate
+```
 
 8. **Gere a chave JWT**
   - php artisan jwt:secret
