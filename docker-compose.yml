@@ -31,13 +31,13 @@ services:
     container_name: laravel_db_onfly
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel
       MYSQL_USER: laravel
       MYSQL_PASSWORD: laravel
     ports:
       - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
+      - ./_docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - onfly-network
 

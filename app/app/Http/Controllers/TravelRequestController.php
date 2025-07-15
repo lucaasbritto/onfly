@@ -67,7 +67,7 @@ class TravelRequestController extends Controller{
         $travelRequest = $query->first();
 
         if (!$travelRequest) {
-            return response()->json(['message' => 'Pedido não encontrado ou sem permissão'], 404);
+            return response()->json(['message' => 'Pedido não encontrado ou sem permissão'], 403);
         }
 
         return response()->json($travelRequest);
